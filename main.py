@@ -2,7 +2,7 @@ import requests
 import urllib
 import os
 
-os.makedirs("books")
+os.makedirs("books", exist_ok=True)
 
 
 for id in range(10):
