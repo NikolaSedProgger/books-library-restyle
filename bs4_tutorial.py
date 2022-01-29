@@ -22,7 +22,7 @@ def download_txt(url, filename, folder='books/'):
     response = requests.get(url, allow_redirects=True)
     response.raise_for_status()
     if check_for_redirect(response):
-        with open(f'{folder + sanitize_filename(filename)}', 'w') as file:
+        with open(f'{folder + sanitize_filename(filename)}.txt', 'w') as file:
             file.write(response.text)
 
 for book_id in range(1, 11):
