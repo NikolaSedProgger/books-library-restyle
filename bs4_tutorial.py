@@ -21,7 +21,10 @@ def get_post(response):
     post_comments = []
     for comment in soup.find('table').find_all('div', class_='texts'):
         post_comments.append(comment.find('span', class_='black').text)
-    return post_image, post_title, post_text, post_comments
+    post_genres = []
+    for genre in soup.find('table').find('span', class_='d_book').find_all('a'):
+        post_genres.append(genre.text)
+    return post_image, post_title, post_text, post_comments, post_genres
     
 
 
@@ -47,6 +50,5 @@ for book_id in range(10):
     response.raise_for_status()
     
     if check_for_redirect(response):
-        print(get_post(response)[1][0])
-        for comment in get_post(response)[3]:
-            print(comment)
+        print(get_post(response)[4])
+
