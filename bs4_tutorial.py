@@ -1,4 +1,5 @@
 from tkinter.messagebox import NO
+from turtle import pos
 from bs4 import BeautifulSoup
 import requests
 from pathvalidate import sanitize_filename
@@ -12,7 +13,7 @@ def check_for_redirect(response):
     if not response.history:
         return True
 
-def get_post(response):
+def parse_book_page(response):
     soup = BeautifulSoup(response.text, 'lxml')
 
     post_image = f"https://tululu.org/{soup.find('table').find('td', class_='ow_px_td').find('img')['src']}"
@@ -24,7 +25,14 @@ def get_post(response):
     post_genres = []
     for genre in soup.find('table').find('span', class_='d_book').find_all('a'):
         post_genres.append(genre.text)
-    return post_image, post_title, post_text, post_comments, post_genres
+    post = {
+        "post_title": post_title,
+        "post_text": post_text,
+        "post_genres": post_genres,
+        "post_comments": post_comments,
+        "post_image": post_image,
+    }
+    return post
     
 
 
@@ -50,5 +58,5 @@ for book_id in range(10):
     response.raise_for_status()
     
     if check_for_redirect(response):
-        print(get_post(response)[4])
+        print(parse_book_page(response)['post_genres'])
 
