@@ -1,6 +1,3 @@
-from this import d
-from tkinter.messagebox import NO
-from turtle import pos
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from pathvalidate import sanitize_filename
@@ -70,4 +67,3 @@ if __name__ == '__main__':
 
         if check_for_redirect(response):
             post = parse_book_page(response)
-            pprint(post)
