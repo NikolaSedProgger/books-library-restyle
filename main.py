@@ -67,3 +67,6 @@ if __name__ == '__main__':
         response.raise_for_status()
         if check_for_redirect(response):
             parsed_book = parse_book_page(response)
+            print(parsed_book)
+            download_text(parsed_book['book_text'])
+            download_image(parsed_book['book_image'])
