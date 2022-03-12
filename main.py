@@ -14,24 +14,25 @@ def parse_book_page(response):
 
 
 
-    post_image = f"https://tululu.org/{soup.find('td', class_='ow_px_td').find('img')['src']}"
-    post_title = soup.find('h1').text.replace('::', '').split('      ')
-    post_text = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
-    post_comments = []
+    book_image = f"https://tululu.org/{soup.find('td', class_='ow_px_td').find('img')['src']}"
+    book_title = soup.find('h1').text.replace('::', '').split('      ')
+    book_author = book_title[1]
+    book_text = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
+    book_comments = []
     for comment in soup.find_all('div', class_='texts'):
-        post_comments.append(comment.find('span', class_='black').text)
-    post_genres = []
+        book_comments.append(comment.find('span', class_='black').text)
+    book_genres = []
     for genre in soup.find('span', class_='d_book').find_all('a'):
-        post_genres.append(genre.text)
-    post = {
-        "post_title": post_title[0],
-        "post_author": post_title[1],
-        "post_text": post_text,
-        "post_genres": post_genres,
-        "post_comments": post_comments,
-        "post_image": post_image,
+        book_genres.append(genre.text)
+    parsed_book = {
+        "book_title": book_title[0],
+        "book_author": book_author,
+        "book_text": book_text,
+        "book_genres": book_genres,
+        "book_comments": book_comments,
+        "book_image": book_image,
     }
-    return post
+    return parsed_book
 
 def download_text(url, filename, folder):
     response = requests.get(url, allow_redirects=True)
@@ -64,8 +65,5 @@ if __name__ == '__main__':
         url = f'http://tululu.org/b{book_id}/'
         response = requests.get(url)
         response.raise_for_status()
-
-
-
         if check_for_redirect(response):
-            post = parse_book_page(response)
+            parsed_book = parse_book_page(response)
