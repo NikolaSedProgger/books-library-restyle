@@ -37,7 +37,7 @@ def download_text(url, filename, folder):
     response = requests.get(url, allow_redirects=True)
     response.raise_for_status()
     if check_for_redirect(response):
-        with open(f'{folder + sanitize_filename(filename)}.txt', 'w') as file:
+        with open(f'{folder}{sanitize_filename(filename)}.txt', 'w') as file:
             file.write(response.text)
 
 def download_image(url, folder):
@@ -45,7 +45,7 @@ def download_image(url, folder):
     response.raise_for_status()
     if check_for_redirect(response):
         filename = urlparse(url).path.replace("//images/", "")
-        with open(f'{folder + sanitize_filename(filename)}', 'wb') as file:
+        with open(f'{folder}{sanitize_filename(filename)}', 'wb') as file:
             file.write(response.content) 
 
 
