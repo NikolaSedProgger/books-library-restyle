@@ -18,12 +18,8 @@ def parse_book_page(response):
     book_title = soup.find('h1').text.replace('::', '').split('      ')
     book_author = book_title[1]
     book_text = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
-    book_comments = []
-    for comment in soup.find_all('div', class_='texts'):
-        book_comments.append(comment.find('span', class_='black').text)
-    book_genres = []
-    for genre in soup.find('span', class_='d_book').find_all('a'):
-        book_genres.append(genre.text)
+    book_comments = [comment.find('span', class_='black').text for comment in soup.find_all('div', class_='texts')]
+    book_genres = [genre.text for genre in soup.find('span', class_='d_book').find_all('a')]
     parsed_book = {
         "book_title": book_title[0],
         "book_author": book_author,
