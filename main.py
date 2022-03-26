@@ -34,18 +34,18 @@ def download_text(url, id, filename):
     params = {'id':id}
     response = requests.get(url, params, allow_redirects=True)
     response.raise_for_status()
-    if check_for_redirect(response):
-        with open(f'books/{sanitize_filename(filename)}.txt', 'w') as file:
-            file.write(response.text)
+    check_for_redirect(response)
+    with open(f'books/{sanitize_filename(filename)}.txt', 'w') as file:
+        file.write(response.text)
 
 
 def download_image(url):
     response = requests.get(url, allow_redirects=True)
     response.raise_for_status()
-    if check_for_redirect(response):
-        filename = urlparse(url).path.replace("//images/", "")
-        with open(f'images/{sanitize_filename(filename)}', 'wb') as file:
-            file.write(response.content)
+    check_for_redirect(response)
+    filename = urlparse(url).path.replace("//images/", "")
+    with open(f'images/{sanitize_filename(filename)}', 'wb') as file:
+        file.write(response.content)
 
 
 if __name__ == '__main__':
