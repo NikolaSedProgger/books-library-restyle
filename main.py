@@ -30,8 +30,9 @@ def parse_book_page(response):
     return parsed_book
 
 
-def download_text(url, filename):
-    response = requests.get(url, allow_redirects=True)
+def download_text(url, id, filename):
+    params = {'id':id}
+    response = requests.get(url, params, allow_redirects=True)
     response.raise_for_status()
     if check_for_redirect(response):
         with open(f'books/{sanitize_filename(filename)}.txt', 'w') as file:
@@ -65,7 +66,7 @@ if __name__ == '__main__':
             check_for_redirect(response)
             parsed_book = parse_book_page(response)
             print(parsed_book)
-            download_text(f'https://tululu.org/txt.php?id={book_id}', parsed_book['book_title'])
+            download_text(f'https://tululu.org/txt.php', book_id, parsed_book['book_title'])
             download_image(parsed_book['book_image'])
         except HTTPError:
             print(response.history)
