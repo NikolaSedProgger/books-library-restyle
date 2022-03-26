@@ -1,4 +1,3 @@
-from tkinter.messagebox import NO
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from pathvalidate import sanitize_filename
@@ -16,13 +15,12 @@ def check_for_redirect(response):
 def parse_book_page(response):
     soup = BeautifulSoup(response.text, 'lxml').find('table')
     book_image = f"https://tululu.org/{soup.find('td', class_='ow_px_td').find('img')['src']}"
-    book_title = soup.find('h1').text.replace('::', '').split('      ')
-    book_author = book_title[1]
+    book_title, book_author = soup.find('h1').text.replace('::', '').split('      ')
     book_text = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
     book_comments = [comment.find('span', class_='black').text for comment in soup.find_all('div', class_='texts')]
     book_genres = [genre.text for genre in soup.find('span', class_='d_book').find_all('a')]
     parsed_book = {
-        "book_title": book_title[0],
+        "book_title": book_title,
         "book_author": book_author,
         "book_text": book_text,
         "book_genres": book_genres,
