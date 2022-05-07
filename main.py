@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from pathvalidate import sanitize_filename
 import requests
 from requests import HTTPError
@@ -13,16 +13,17 @@ def check_for_redirect(response):
 
 
 def parse_book_page(response):
-    soup = BeautifulSoup(response.text, 'lxml').find('table')
+    soup = BeautifulSoup(response.text, "lxml").find('table')
+    book_title, book_author = soup.find('h1').text.split(' \xa0 :: \xa0 ')
+    #soup = BeautifulSoup(response.text, 'lxml').find('table')
     book_image = f"https://tululu.org/{soup.find('td', class_='ow_px_td').find('img')['src']}"
-    book_title, book_author = soup.find('h1').text.replace('::', '').split('      ')
-    book_text = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
+    book_description = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
     book_comments = [comment.find('span', class_='black').text for comment in soup.find_all('div', class_='texts')]
     book_genres = [genre.text for genre in soup.find('span', class_='d_book').find_all('a')]
     parsed_book = {
         "book_title": book_title,
         "book_author": book_author,
-        "book_text": book_text,
+        "book_description": book_description,
         "book_genres": book_genres,
         "book_comments": book_comments,
         "book_image": book_image,
@@ -30,14 +31,17 @@ def parse_book_page(response):
     return parsed_book
 
 
-def download_text(url, id, filename):
+def download_text(id, filename):
     params = {'id':id}
+    url = 'https://tululu.org/txt.php'
     response = requests.get(url, params, allow_redirects=True)
     response.raise_for_status()
     check_for_redirect(response)
     with open(f'books/{sanitize_filename(filename)}.txt', 'w') as file:
-        file.write(response.text)
-
+        try:
+            file.write(response.text)
+        except UnicodeEncodeError:
+            None
 
 def download_image(url):
     response = requests.get(url, allow_redirects=True)
