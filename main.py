@@ -13,13 +13,13 @@ def check_for_redirect(response):
 
 
 def parse_book_page(response):
-    soup = BeautifulSoup(response.text, "lxml").find('table')
+    soup = BeautifulSoup(response.text, "lxml").select_one('table')
     book_title, book_author = soup.find('h1').text.split(' \xa0 :: \xa0 ')
     #soup = BeautifulSoup(response.text, 'lxml').find('table')
-    book_image = f"https://tululu.org/{soup.find('td', class_='ow_px_td').find('img')['src']}"
-    book_description = soup.find('div', id='content').find_all('table', class_='d_book')[1].find('td').text
-    book_comments = [comment.find('span', class_='black').text for comment in soup.find_all('div', class_='texts')]
-    book_genres = [genre.text for genre in soup.find('span', class_='d_book').find_all('a')]
+    book_image = f"https://tululu.org/{soup.select_one('td.ow_px_td img')['src']}"
+    book_description = soup.find('div', id='content').select('table.d_book')[1].select_one('td').text
+    book_comments = [comment.select_one('span.black').text for comment in soup.select('div.texts')]
+    book_genres = [genre.text for genre in soup.select_one('span.d_book').select('a')]
     parsed_book = {
         "book_title": book_title,
         "book_author": book_author,

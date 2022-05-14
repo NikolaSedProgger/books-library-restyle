@@ -13,9 +13,9 @@ for book_id in range(1, 11):
     response = requests.get(url, allow_redirects=True)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'lxml')
-    books =  soup.find_all('table', class_='d_book')
+    books =  soup.select('table.d_book')
     for book in books:
-        book_url = urljoin('https://tululu.org/', book.find('a')['href'])
+        book_url = urljoin('https://tululu.org/', book.select_one('a')['href'])
         book_id = urlparse(book_url).path.replace('/b','')
         response = requests.get(book_url)
         parsed_book = parse_book_page(response)
