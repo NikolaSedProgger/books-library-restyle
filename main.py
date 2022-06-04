@@ -6,14 +6,15 @@ from requests import HTTPError
 import os
 import argparse
 
+
 def check_for_redirect(response):
     if response.history:
         raise HTTPError
 
+
 def parse_book_page(response):
     soup = BeautifulSoup(response.text, "lxml").select_one('table')
     book_title, book_author = soup.find('h1').text.split(' \xa0 :: \xa0 ')
-    #soup = BeautifulSoup(response.text, 'lxml').find('table')
     book_image = f"https://tululu.org/{soup.select_one('td.ow_px_td img')['src']}"
     book_description = soup.find('div', id='content').select('table.d_book')[1].select_one('td').text
     book_comments = [comment.select_one('span.black').text for comment in soup.select('div.texts')]
@@ -28,8 +29,9 @@ def parse_book_page(response):
     }
     return parsed_book
 
+
 def download_text(id, filename, folder):
-    params = {'id':id}
+    params = {'id': id}
     url = 'https://tululu.org/txt.php'
     response = requests.get(url, params, allow_redirects=True)
     response.raise_for_status()
@@ -55,7 +57,6 @@ if __name__ == '__main__':
     parser.add_argument('start_id', help='Первый id книги', type=int)
     parser.add_argument('end_id', help='Последний id книги', type=int)
     args = parser.parse_args()
-    
     for book_id in range(args.start_id, args.end_id+1):
         url = f'https://tululu.org/b{book_id}/'
         response = requests.get(url, allow_redirects=True)
