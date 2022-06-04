@@ -1,41 +1,61 @@
+from cgitb import reset
 from bs4 import BeautifulSoup
-import requests
+from requests import get, HTTPError, request
 from urllib.parse import urljoin, urlparse
 import os
 from main import parse_book_page, download_text, download_image
 import json
 import argparse
 
-os.makedirs("books", exist_ok=True)
-os.makedirs("images", exist_ok=True)
-parsed_books = []
-def download_books(start_page, end_page):
+
+
+
+
+LIB = 55
+def get_books_urls(start_page, end_page):
+    books_urls = []
     for page in range(start_page, end_page):
-        url = f'https://tululu.org/l55/{page}/'
-        response = requests.get(url, allow_redirects=True)
+        url = f'https://tululu.org/l{LIB}/{page}/'
+        response = get(url, allow_redirects=True)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
-        books =  soup.select('table.d_book')
+        books = soup.select('table.d_book')
         for book in books:
-            book_url = urljoin('https://tululu.org/', book.select_one('a')['href'])
-            book_id = urlparse(book_url).path.replace('/b','')
-            response = requests.get(book_url)
-            parsed_book = parse_book_page(response)
-            parsed_books.append(parsed_book)
+            books_urls.append(urljoin('https://tululu.org/', book.select_one('a')['href']))
+    return books_urls
 
-            print(book_id)
-            try:
-                download_text(book_id, parsed_book['book_title'])
-                download_image(parsed_book['book_image'])
-            except requests.HTTPError:
-                None
 
-with open('books.json', 'w', encoding='utf8') as json_file:
-    json.dump(parsed_books, json_file, ensure_ascii=False)
+
 parser = argparse.ArgumentParser(
     description='Программа скачивает книги по указаным страницам'
 )
-parser.add_argument('--start_page', help='Первая страница', type=int)
-parser.add_argument('--end_page', help='Последняя страница', default='702', type=int)
+parser.add_argument('-start', '--start_page', help='Первая страница', type=int)
+parser.add_argument('-end', '--end_page', help='Последняя страница', default='702', type=int)
+parser.add_argument('--skip_txt', action='store_true')
+parser.add_argument('--skip_imgs', action='store_true')
+parser.add_argument('--dest_folder', default='library files')
+parser.add_argument('--json_path', default='json_files')
 args = parser.parse_args()
-download_books(args.start_page, args.end_page)
+def main(start_page, end_page):
+    os.makedirs(f"{args.dest_folder}/books", exist_ok=True)
+    os.makedirs(f"{args.dest_folder}/images", exist_ok=True)
+    os.makedirs(f"{args.dest_folder}/{args.json_path}", exist_ok=True)
+    parsed_books  = []
+    for book_url in get_books_urls(start_page, end_page+1):
+        response = get(book_url)
+        response.raise_for_status()
+        parsed_book = parse_book_page(response)
+        print(parsed_book)
+        book_id = urlparse(book_url).path.replace('/b','')
+        try:
+            if not args.skip_txt:
+                download_text(book_id, book_id, f'{args.dest_folder}/books')
+            if not args.skip_imgs:
+                download_image(parsed_book['book_image'], f'{args.dest_folder}/images')
+            parsed_books.append(parsed_book)
+        except HTTPError:
+            None
+    with open(f'{args.dest_folder}/{args.json_path}/books.json', 'w', encoding='utf8') as json_file:
+        json.dump(parsed_books, json_file, ensure_ascii=False)
+main(args.start_page, args.end_page)
+
