@@ -9,7 +9,7 @@ from requests import get, HTTPError
 from main import parse_book_page, download_text, download_image
 
 
-LIB = 55
+LIBRARY_NUM = 55
 parser = argparse.ArgumentParser(
     description='Программа скачивает книги по указаным страницам'
 )
@@ -25,7 +25,7 @@ args = parser.parse_args()
 def get_books_urls(start_page, end_page):
     books_urls = []
     for page in range(start_page, end_page):
-        url = f'https://tululu.org/l{LIB}/{page}/'
+        url = f'https://tululu.org/l{LIBRARY_NUM}/{page}/'
         response = get(url, allow_redirects=True)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
