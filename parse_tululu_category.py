@@ -29,9 +29,9 @@ def get_books_urls(start_page, end_page):
         response = get(url, allow_redirects=True)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
-        books = soup.select('table.d_book')
-        for book in books:
-            books_urls.append(urljoin('https://tululu.org/', book.select_one('a')['href']))
+        soup_tags = soup.select('table.d_book')
+        for tag in soup_tags:
+            books_urls.append(urljoin('https://tululu.org/', tag.select_one('a')['href']))
     return books_urls
 
 
