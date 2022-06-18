@@ -55,4 +55,6 @@ def main(start_page, end_page):
             None
     with open(f'{args.dest_folder}/{args.json_path}/books.json', 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
-main(args.start_page, args.end_page)
+
+if __name__ == "__main__":
+    main(args.start_page, args.end_page)
