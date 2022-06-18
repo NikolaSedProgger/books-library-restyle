@@ -48,13 +48,13 @@ def main(start_page, end_page):
         book_id = urlparse(book_url).path.replace('/b', '')
         try:
             if not args.skip_txt:
-                download_text(book_id, book_id, f'{args.dest_folder}/books')
+                download_text(book_id, book_id, os.path.join(args.dest_folder,'books'))
             if not args.skip_imgs:
-                download_image(parsed_book['book_image'], f'{args.dest_folder}/images')
+                download_image(parsed_book['book_image'], os.path.join(args.dest_folder,'images'))
             parsed_books.append(parsed_book)
         except HTTPError:
             None
-    with open(f'{args.dest_folder}/{args.json_path}/books.json', 'w', encoding='utf8') as json_file:
+    with open(os.path.join(args.dest_folder, args.json_path, 'books.json'), 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
 
 if __name__ == "__main__":
