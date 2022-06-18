@@ -1,6 +1,5 @@
-from cgitb import reset
 from bs4 import BeautifulSoup
-from requests import get, HTTPError, request
+from requests import get, HTTPError
 from urllib.parse import urljoin, urlparse
 import os
 from main import parse_book_page, download_text, download_image

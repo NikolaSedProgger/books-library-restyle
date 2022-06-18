@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 from pathvalidate import sanitize_filename
 import requests
 from requests import HTTPError
