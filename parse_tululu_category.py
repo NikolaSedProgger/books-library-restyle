@@ -1,4 +1,5 @@
 import argparse
+from dbm.ndbm import library
 import os
 import json
 from urllib.parse import urljoin, urlparse
@@ -9,7 +10,6 @@ from requests import get, HTTPError
 from main import parse_book_page, download_text, download_image
 
 
-LIBRARY_NUM = 55
 parser = argparse.ArgumentParser(
     description='Программа скачивает книги по указаным страницам'
 )
@@ -22,10 +22,10 @@ parser.add_argument('--json_path', default='json files')
 args = parser.parse_args()
 
 
-def get_books_urls(start_page, end_page):
+def get_books_urls(start_page, end_page, library_num):
     books_urls = []
     for page in range(start_page, end_page):
-        url = f'https://tululu.org/l{LIBRARY_NUM}/{page}/'
+        url = f'https://tululu.org/l{library_num}/{page}/'
         response = get(url, allow_redirects=True)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
@@ -39,8 +39,9 @@ def main(start_page, end_page):
     os.makedirs(f"{args.dest_folder}/books", exist_ok=True)
     os.makedirs(f"{args.dest_folder}/images", exist_ok=True)
     os.makedirs(f"{args.dest_folder}/{args.json_path}", exist_ok=True)
+    library_num = 55
     parsed_books = []
-    for book_url in get_books_urls(start_page, end_page+1):
+    for book_url in get_books_urls(start_page, end_page+1, library_num):
         response = get(book_url)
         response.raise_for_status()
         parsed_book = parse_book_page(response)
