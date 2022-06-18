@@ -1,10 +1,13 @@
+import argparse
+import os
+import json
+from urllib.parse import urljoin, urlparse
+
 from bs4 import BeautifulSoup
 from requests import get, HTTPError
-from urllib.parse import urljoin, urlparse
-import os
+
 from main import parse_book_page, download_text, download_image
-import json
-import argparse
+
 
 LIB = 55
 parser = argparse.ArgumentParser(

@@ -1,15 +1,17 @@
-from bs4 import BeautifulSoup
+import argparse
+import os
 from urllib.parse import urlparse
+
+from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
 import requests
-from requests import HTTPError
-import os
-import argparse
+
+
 
 
 def check_for_redirect(response):
     if response.history:
-        raise HTTPError
+        raise requests.HTTPError
 
 
 def parse_book_page(response):
@@ -67,5 +69,5 @@ if __name__ == '__main__':
             print(parsed_book)
             download_text(f'https://tululu.org/txt.php', book_id, parsed_book['book_title'], 'library files/books')
             download_image(parsed_book['book_image'], 'library files/images')
-        except HTTPError:
+        except requests.HTTPError:
             print(response.history)
