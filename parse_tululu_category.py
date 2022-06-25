@@ -4,9 +4,11 @@ import os
 import json
 from urllib.parse import urljoin, urlparse
 
-from bs4 import BeautifulSoup
 
-from main import parse_book_page, download_text, download_image
+from bs4 import BeautifulSoup
+from requests import get, HTTPError, ConnectionError
+
+from main import parse_book_page, download_text, download_image, check_for_redirect
 
 
 parser = argparse.ArgumentParser(
@@ -27,6 +29,7 @@ def get_books_urls(start_page, end_page, library_num):
         url = f'https://tululu.org/l{library_num}/{page}/'
         response = get(url, allow_redirects=True)
         response.raise_for_status()
+        check_for_redirect(response)
         soup = BeautifulSoup(response.text, 'lxml')
         soup_tags = soup.select('table.d_book')
         for tag in soup_tags:
