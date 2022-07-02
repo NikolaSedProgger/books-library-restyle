@@ -1,6 +1,7 @@
 import argparse
 from dbm.ndbm import library
 import os
+import time
 import json
 from urllib.parse import urljoin, urlparse
 
@@ -47,6 +48,7 @@ def main(start_page, end_page):
             except HTTPError:
                 None
     except ConnectionError:
+        time.sleep(5)
         None
     with open(os.path.join(args.dest_folder, args.json_path, 'books.json'), 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
