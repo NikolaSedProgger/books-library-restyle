@@ -34,12 +34,12 @@ def main(start_page, end_page):
     parsed_books = []
     try:
         for book_url in get_books_urls(start_page, end_page+1, library_num):
-            response = get(book_url)
-            response.raise_for_status()
-            check_for_redirect(response)
-            parsed_book = parse_book_page(response)
-            book_id = urlparse(book_url).path.replace('/b', '')
             try:
+                response = get(book_url)
+                response.raise_for_status()
+                check_for_redirect(response)
+                parsed_book = parse_book_page(response)
+                book_id = urlparse(book_url).path.replace('/b', '')
                 if not args.skip_txt:
                     download_text(book_id, book_id, os.path.join(args.dest_folder,'books'))
                 if not args.skip_imgs:
