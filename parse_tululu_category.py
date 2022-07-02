@@ -11,18 +11,6 @@ from requests import get, HTTPError, ConnectionError
 from main import parse_book_page, download_text, download_image, check_for_redirect
 
 
-parser = argparse.ArgumentParser(
-    description='Программа скачивает книги по указаным страницам'
-)
-parser.add_argument('-start', '--start_page', help='Первая страница', type=int)
-parser.add_argument('-end', '--end_page', help='Последняя страница', default='702', type=int)
-parser.add_argument('--skip_txt', action='store_true')
-parser.add_argument('--skip_imgs', action='store_true')
-parser.add_argument('--dest_folder', default='library files')
-parser.add_argument('--json_path', default='json files')
-args = parser.parse_args()
-
-
 def get_books_urls(start_page, end_page, library_num):
     books_urls = []
     for page in range(start_page, end_page):
@@ -64,4 +52,15 @@ def main(start_page, end_page):
         json.dump(parsed_books, json_file, ensure_ascii=False)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Программа скачивает книги по указаным страницам'
+    )
+    parser.add_argument('-start', '--start_page', help='Первая страница', type=int)
+    parser.add_argument('-end', '--end_page', help='Последняя страница', default='702', type=int)
+    parser.add_argument('--skip_txt', action='store_true')
+    parser.add_argument('--skip_imgs', action='store_true')
+    parser.add_argument('--dest_folder', default='library files')
+    parser.add_argument('--json_path', default='json files')
+    args = parser.parse_args()    
+    
     main(args.start_page, args.end_page)
