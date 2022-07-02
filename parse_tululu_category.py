@@ -26,9 +26,9 @@ def get_books_urls(start_page, end_page, library_num):
 
 
 def main(start_page, end_page):
-    os.makedirs(f"{args.dest_folder}/books", exist_ok=True)
-    os.makedirs(f"{args.dest_folder}/images", exist_ok=True)
-    os.makedirs(f"{args.dest_folder}/{args.json_path}", exist_ok=True)
+    os.makedirs(os.path.join(args.dest_folder, "books"), exist_ok=True)
+    os.makedirs(os.path.join(args.dest_folder, "images"), exist_ok=True)
+    os.makedirs(os.path.join(args.dest_folder, args.json_path), exist_ok=True)
     library_num = 55
     parsed_books = []
     try:

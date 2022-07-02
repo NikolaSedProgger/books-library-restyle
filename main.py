@@ -38,7 +38,7 @@ def download_text(id, filename, folder):
     response = requests.get(url, params, allow_redirects=True)
     response.raise_for_status()
     check_for_redirect(response)
-    with open(f'{folder}/{sanitize_filename(filename)}.txt', 'w', encoding='utf8') as file:
+    with open(f'{os.path.join(folder, sanitize_filename(filename))}.txt', 'w', encoding='utf8') as file:
         file.write(response.text)
 
 
@@ -47,12 +47,12 @@ def download_image(url, folder):
     response.raise_for_status()
     check_for_redirect(response)
     filename = urlparse(url).path.replace("//images/", "")
-    with open(f'{folder}/{sanitize_filename(filename)}', 'wb') as file:
+    with open(os.path.join(folder, sanitize_filename(filename)), 'wb') as file:
         file.write(response.content)
 
 if __name__ == '__main__':
-    os.makedirs("library files/books", exist_ok=True)
-    os.makedirs("library files/images", exist_ok=True)
+    os.makedirs(os.path.join("library files", "books"), exist_ok=True)
+    os.makedirs(os.path.join("library files", "images"), exist_ok=True)
     parser = argparse.ArgumentParser(
         description='Программа скачивает книги по их id с tululu.org'
     )
@@ -68,6 +68,6 @@ if __name__ == '__main__':
             parsed_book = parse_book_page(response)
             print(parsed_book)
             download_text(f'https://tululu.org/txt.php', book_id, parsed_book['book_title'], 'library files/books')
-            download_image(parsed_book['book_image'], 'library files/images')
+            download_image(parsed_book['book_image'], os.path.join('library files', 'images'))
         except requests.HTTPError:
             print(response.history)
