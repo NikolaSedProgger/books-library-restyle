@@ -57,8 +57,11 @@ def main(start_page, end_page):
                 parsed_books.append(parsed_book)
             except HTTPError:
                 print('Ошибка HTTPError.')
+                time.sleep(5)
+                main(start_page, end_page)
     except ConnectionError:
         print("Ошибка ConnectionError.")
         time.sleep(5)
+        main(start_page, end_page)
     with open(os.path.join(args.dest_folder, args.json_path, 'books.json'), 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
