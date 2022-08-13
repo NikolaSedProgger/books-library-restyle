@@ -14,7 +14,7 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def parse_book_page(response):
+def parse_book_page(response, book_id):
     soup = BeautifulSoup(response.text, "lxml").select_one('table')
     book_title, book_author = soup.select_one('h1').text.split(' \xa0 :: \xa0 ')
     book_image_url = urljoin(f"https://tululu.org/{book_id}", soup.select_one('td.ow_px_td img')['src'])
@@ -27,7 +27,7 @@ def parse_book_page(response):
         "book_description": book_description,
         "book_genres": book_genres,
         "book_comments": book_comments,
-        "book_image": book_image,
+        "book_image": book_image_url,
     }
     return parsed_book
 
@@ -57,8 +57,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Программа скачивает книги по их id с tululu.org'
     )
-    parser.add_argument('start_id', help='Первый id книги', type=int)
-    parser.add_argument('end_id', help='Последний id книги', type=int)
+    parser.add_argument('--start_id', help='Первый id книги', type=int)
+    parser.add_argument('--end_id', help='Последний id книги', type=int)
     args = parser.parse_args()
     for book_id in range(args.start_id, args.end_id+1):
         url = f'https://tululu.org/b{book_id}/'
@@ -66,7 +66,7 @@ if __name__ == '__main__':
         response.raise_for_status()
         try:
             check_for_redirect(response)
-            parsed_book = parse_book_page(response)
+            parsed_book = parse_book_page(response, book_id)
             print(parsed_book)
             download_text(f'https://tululu.org/txt.php', book_id, parsed_book['book_title'], 'library files/books')
             download_image(parsed_book['book_image'], os.path.join('library files', 'images'))
