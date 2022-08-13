@@ -25,7 +25,7 @@ def get_books_urls(start_page, end_page, library_num):
     return books_urls
 
 
-def main(start_page, end_page):
+def main():
     parser = argparse.ArgumentParser(
         description='Программа скачивает книги по указаным страницам'
     )
@@ -36,6 +36,8 @@ def main(start_page, end_page):
     parser.add_argument('--dest_folder', default='library files')
     parser.add_argument('--json_path', default='json files')
     args = parser.parse_args()
+    start_page = args.start_page
+    end_page = args.end_page
     os.makedirs(os.path.join(args.dest_folder, "books"), exist_ok=True)
     os.makedirs(os.path.join(args.dest_folder, "images"), exist_ok=True)
     os.makedirs(os.path.join(args.dest_folder, args.json_path), exist_ok=True)
@@ -64,3 +66,4 @@ def main(start_page, end_page):
         main(start_page, end_page)
     with open(os.path.join(args.dest_folder, args.json_path, 'books.json'), 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
+main()
