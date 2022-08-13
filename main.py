@@ -38,7 +38,8 @@ def download_text(id, filename, folder):
     response = requests.get(url, params, allow_redirects=True)
     response.raise_for_status()
     check_for_redirect(response)
-    with open(f'{os.path.join(folder, sanitize_filename(filename))}.txt', 'w', encoding='utf8') as file:
+    file_path = f'{os.path.join(folder, sanitize_filename(filename))}.txt'
+    with open(file_path, 'w', encoding='utf8') as file:
         file.write(response.text)
 
 
