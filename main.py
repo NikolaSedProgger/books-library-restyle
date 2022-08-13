@@ -17,7 +17,7 @@ def check_for_redirect(response):
 def parse_book_page(response):
     soup = BeautifulSoup(response.text, "lxml").select_one('table')
     book_title, book_author = soup.select_one('h1').text.split(' \xa0 :: \xa0 ')
-    book_image = urljoin("https://tululu.org/", soup.select_one('td.ow_px_td img')['src'])
+    book_image_url = urljoin(f"https://tululu.org/{book_id}", soup.select_one('td.ow_px_td img')['src'])
     book_description = soup.find('div', id='content').select('table.d_book')[1].select_one('td').text
     book_comments = [comment.select_one('span.black').text for comment in soup.select('div.texts')]
     book_genres = [genre.text for genre in soup.select_one('span.d_book').select('a')]

@@ -1,5 +1,4 @@
 import argparse
-from dbm.ndbm import library
 import os
 import time
 import json
@@ -22,7 +21,7 @@ def get_books_urls(start_page, end_page, library_num):
         soup = BeautifulSoup(response.text, 'lxml')
         soup_tags = soup.select('table.d_book')
         for tag in soup_tags:
-            books_urls.append(urljoin('https://tululu.org/', tag.select_one('a')['href']))
+            books_urls.append(urljoin('https://tululu.org/b1', tag.select_one('a')['href']))
     return books_urls
 
 
