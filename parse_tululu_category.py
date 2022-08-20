@@ -8,7 +8,7 @@ from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 from requests import get, HTTPError, ConnectionError
 
-from main import parse_book_page, download_text, download_image, check_for_redirect
+from parse_tululu_books import parse_book_page, download_text, download_image, check_for_redirect
 
 
 def get_books_urls(start_page, end_page, library_num):
@@ -59,9 +59,10 @@ def main():
             except HTTPError:
                 print('Ошибка HTTPError.')
                 time.sleep(5)
+                continue
     except ConnectionError:
         print("Ошибка ConnectionError.")
-        time.sleep(5)
+        time.sleep(5)  
     with open(os.path.join(args.dest_folder, args.json_path, 'books.json'), 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
 main()
