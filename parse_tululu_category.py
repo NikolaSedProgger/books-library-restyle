@@ -62,7 +62,8 @@ def main():
                 continue
     except ConnectionError:
         print("Ошибка ConnectionError.")
-        time.sleep(5)  
+        time.sleep(5)
+        main()
     with open(os.path.join(args.dest_folder, args.json_path, 'books.json'), 'w', encoding='utf8') as json_file:
         json.dump(parsed_books, json_file, ensure_ascii=False)
 main()
